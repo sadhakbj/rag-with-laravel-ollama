@@ -20,9 +20,9 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_DB: your_test_database
-          POSTGRES_USER: your_username
-          POSTGRES_PASSWORD: your_password
+          POSTGRES_DB: laravel_rag_test
+          POSTGRES_USER: root
+          POSTGRES_PASSWORD: root
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
