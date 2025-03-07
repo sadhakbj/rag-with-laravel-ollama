@@ -11,7 +11,9 @@ const Chat = () => {
         setMessage(''); // Clear previous messages
         setIsLoading(true); // Disable input while loading
 
-        const eventSource = new EventSource(`/api/chat?query=${encodeURIComponent(query)}`);
+        // const eventSource = new EventSource(`/api/chat?query=${encodeURIComponent(query)}`);
+
+        const eventSource = new EventSource(`/check-pr?query=${encodeURIComponent(query)}`);
 
         eventSource.onmessage = (event) => {
             const data = event.data;

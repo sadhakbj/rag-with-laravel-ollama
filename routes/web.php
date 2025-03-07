@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChatController;
+use App\Services\GithubService;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -18,11 +19,22 @@ Route::get('/bijaya', function () {
     return Inertia::render('bijaya');
 })->name('bijaya');
 
-Route::get('/check-pr', function () {
-    $service = new \App\Services\GithubService;
-    $response = $service->fetchPRDiff('laravel', 'framework', 1);
+Route::get('/check-pr', function (GithubService $service) {
+    // $response = $service->processPR('sadhakbj', 'framework', 2);
 
-    return $response->json();
+    return response()->stream(function () use ($service) {
+        $generator = $service->processPR('sadhakbj', 'framework', 2);
+        foreach ($generator as $chunk) {
+            echo "data: {$chunk}\n\n";
+            ob_flush();
+            flush();
+        }
+        echo "data: </stream>\n\n";
+    }, 200, [
+        'Content-Type' => 'text/event-stream',
+        'Cache-Control' => 'no-cache',
+        'Connection' => 'keep-alive',
+    ]);
 });
 
 Route::get('/chat', [ChatController::class, 'index'])->name('chat');
