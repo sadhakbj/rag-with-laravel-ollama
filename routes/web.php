@@ -18,6 +18,12 @@ Route::get('/bijaya', function () {
     return Inertia::render('bijaya');
 })->name('bijaya');
 
+Route::get('/check-pr', function () {
+    $service = new \App\Services\GithubService;
+    $response = $service->fetchPRDiff('laravel', 'framework', 1);
+
+    return $response->json();
+});
 
 Route::get('/chat', [ChatController::class, 'index'])->name('chat');
 Route::get('/api/chat', [ChatController::class, 'chat'])->name('api.chat');
@@ -38,6 +44,5 @@ Route::get('/simple-sse', function () {
     ]);
 });
 
-
-require __DIR__ . '/settings.php';
-require __DIR__ . '/auth.php';
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';
