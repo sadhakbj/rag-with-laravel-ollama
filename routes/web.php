@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChatController;
+use App\Services\GithubService;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -18,6 +19,25 @@ Route::get('/bijaya', function () {
     return Inertia::render('bijaya');
 })->name('bijaya');
 
+Route::get('/check-pr', function (GithubService $service) {
+    $service->processPR('sadhakbj', 'rag-with-laravel-ollama', 2);
+
+    return response()->json(['message' => 'Processing PR, please wait couple of seconds.']);
+
+    // return response()->stream(function () use ($service) {
+    //     $generator = $service->processPR('sadhakbj', 'framework', 2);
+    //     foreach ($generator as $chunk) {
+    //         echo "data: {$chunk}\n\n";
+    //         ob_flush();
+    //         flush();
+    //     }
+    //     echo "data: </stream>\n\n";
+    // }, 200, [
+    //     'Content-Type' => 'text/event-stream',
+    //     'Cache-Control' => 'no-cache',
+    //     'Connection' => 'keep-alive',
+    // ]);
+});
 
 Route::get('/chat', [ChatController::class, 'index'])->name('chat');
 Route::get('/api/chat', [ChatController::class, 'chat'])->name('api.chat');
@@ -38,6 +58,5 @@ Route::get('/simple-sse', function () {
     ]);
 });
 
-
-require __DIR__ . '/settings.php';
-require __DIR__ . '/auth.php';
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';
