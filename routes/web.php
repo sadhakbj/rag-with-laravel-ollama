@@ -20,21 +20,23 @@ Route::get('/bijaya', function () {
 })->name('bijaya');
 
 Route::get('/check-pr', function (GithubService $service) {
-    // $response = $service->processPR('sadhakbj', 'framework', 2);
+    $service->processPR('sadhakbj', 'rag-with-laravel-ollama', 2);
 
-    return response()->stream(function () use ($service) {
-        $generator = $service->processPR('sadhakbj', 'framework', 2);
-        foreach ($generator as $chunk) {
-            echo "data: {$chunk}\n\n";
-            ob_flush();
-            flush();
-        }
-        echo "data: </stream>\n\n";
-    }, 200, [
-        'Content-Type' => 'text/event-stream',
-        'Cache-Control' => 'no-cache',
-        'Connection' => 'keep-alive',
-    ]);
+    return response()->json(['message' => 'Processing PR, please wait couple of seconds.']);
+
+    // return response()->stream(function () use ($service) {
+    //     $generator = $service->processPR('sadhakbj', 'framework', 2);
+    //     foreach ($generator as $chunk) {
+    //         echo "data: {$chunk}\n\n";
+    //         ob_flush();
+    //         flush();
+    //     }
+    //     echo "data: </stream>\n\n";
+    // }, 200, [
+    //     'Content-Type' => 'text/event-stream',
+    //     'Cache-Control' => 'no-cache',
+    //     'Connection' => 'keep-alive',
+    // ]);
 });
 
 Route::get('/chat', [ChatController::class, 'index'])->name('chat');

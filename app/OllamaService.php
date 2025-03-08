@@ -37,7 +37,7 @@ class OllamaService
             throw new \Exception('Failed to generate text: '.$response->body());
         }
 
-        return $response->json('text');
+        return $response->json('response');
     }
 
     public function streamGenerate(string $question, string $context)
