@@ -1,9 +1,10 @@
+import { Button } from '@/components/ui/button';
+import { Head } from '@inertiajs/react';
+import { LoaderCircle, MessageCircleCode } from 'lucide-react';
 import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism';
-// Import Shadcn button component
-import { Button } from '@/components/ui/Button';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 const Chat = () => {
     const [query, setQuery] = useState('');
@@ -46,7 +47,8 @@ const Chat = () => {
 
     return (
         <div className="mx-auto max-w-2xl space-y-4 p-4">
-            <h2 className="text-center text-2xl font-bold">Chat with AI</h2>
+            <Head title="My Local RAG" />
+            <h2 className="text-center text-2xl font-bold">My Local RAG</h2>
             <div className="flex space-x-2">
                 <input
                     type="text"
@@ -57,7 +59,9 @@ const Chat = () => {
                     disabled={isLoading}
                 />
                 <Button onClick={sendMessage} disabled={isLoading}>
-                    {isLoading ? 'Thinking...' : 'Send'}
+                    {/* {isLoading ? 'Thinking...' : 'Send'} */}
+                    {isLoading && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                    <MessageCircleCode className="h-4 w-4" />
                 </Button>
             </div>
             <div className="min-h-[300px] rounded border bg-gray-100 p-3 shadow-inner">
@@ -67,7 +71,7 @@ const Chat = () => {
                             code({ node, inline, className, children, ...props }) {
                                 const match = /language-(\w+)/.exec(className || '');
                                 return !inline && match ? (
-                                    <SyntaxHighlighter style={dracula} language={match[1]} PreTag="div" {...props}>
+                                    <SyntaxHighlighter style={vscDarkPlus} language={match[1]} PreTag="div" {...props}>
                                         {String(children).replace(/\n$/, '')}
                                     </SyntaxHighlighter>
                                 ) : (
@@ -81,7 +85,7 @@ const Chat = () => {
                         {message}
                     </ReactMarkdown>
                 ) : isLoading ? (
-                    'Generating response...'
+                    <LoaderCircle className="h-4 w-4 animate-spin" />
                 ) : (
                     'Enter a question to get started.'
                 )}

@@ -1,0 +1,65 @@
+Generating Migrations
+You may use the make:migration cooler command to generate a database migration. The new migration will be placed in your database/migrations directory. Each migration filename contains a timestamp that allows COOLPHP to determine the order of the migrations:
+
+php cooler make:migration create_flights_table
+
+COOLPHP will use the name of the migration to attempt to guess the name of the table and whether or not the migration will be creating a new table. If COOLPHP is able to determine the table name from the migration name, COOLPHP will pre-fill the generated migration file with the specified table. Otherwise, you may simply specify the table in the migration file manually.
+
+If you would like to specify a custom path for the generated migration, you may use the --path option when executing the make:migration command. The given path should be relative to your application's base path.
+
+Migration stubs may be customized using stub publishing.
+
+Squashing Migrations
+As you build your application, you may accumulate more and more migrations over time. This can lead to your database/migrations directory becoming bloated with potentially hundreds of migrations. If you would like, you may "squash" your migrations into a single SQL file. To get started, execute the schema:dump command:
+
+php cooler schema:dump
+ 
+# Dump the current database schema and prune all existing migrations...
+php cooler schema:dump --prune
+
+When you execute this command, COOLPHP will write a "schema" file to your application's database/schema directory. The schema file's name will correspond to the database connection. Now, when you attempt to migrate your database and no other migrations have been executed, COOLPHP will first execute the SQL statements in the schema file of the database connection you are using. After executing the schema file's SQL statements, COOLPHP will execute any remaining migrations that were not part of the schema dump.
+
+If your application's tests use a different database connection than the one you typically use during local development, you should ensure you have dumped a schema file using that database connection so that your tests are able to build your database. You may wish to do this after dumping the database connection you typically use during local development:
+
+php cooler schema:dump
+php cooler schema:dump --database=testing --prune
+
+You should commit your database schema file to source control so that other new developers on your team may quickly create your application's initial database structure.
+
+Migration squashing is only available for the MariaDB, MySQL, PostgreSQL, and SQLite databases and utilizes the database's command-line client.
+
+Migration Structure
+A migration class contains two methods: up and down. The up method is used to add new tables, columns, or indexes to your database, while the down method should reverse the operations performed by the up method.
+
+Within both of these methods, you may use the COOLPHP schema builder to expressively create and modify tables.
+```
+<?php
+ 
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+ 
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('flights', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('airline');
+            $table->timestamps();
+        });
+    }
+ 
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::drop('flights');
+    }
+};
+```

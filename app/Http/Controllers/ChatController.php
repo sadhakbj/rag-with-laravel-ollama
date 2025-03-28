@@ -10,10 +10,7 @@ use Inertia\Response;
 
 class ChatController extends Controller
 {
-    public function __construct(private readonly OllamaService $ollamaService)
-    {
-
-    }
+    public function __construct(private readonly OllamaService $ollamaService) {}
 
     public function index(): Response
     {
@@ -31,12 +28,13 @@ class ChatController extends Controller
 
         $query = "
         SELECT content
-        FROM documents
+        FROM laravel_docs
         ORDER BY embedding <=> '[$embeddingVector]'
+        LIMIT 2
         ";
 
         $results = DB::select($query);
-        $content = implode(' ', array_map(fn($result) => $result->content, $results)) ?? "I don't have information on that."; // Aggregate content
+        $content = implode(' ', array_map(fn ($result) => $result->content, $results)) ?? "I don't have information on that."; // Aggregate content
 
         return response()->stream(function () use ($text, $content) {
             $generator = $this->ollamaService->streamGenerate($text, $content);
