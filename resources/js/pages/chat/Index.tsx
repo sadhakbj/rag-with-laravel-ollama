@@ -5,6 +5,7 @@ import { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import { Textarea } from '@/components/ui/textarea';
 
 const Chat = () => {
     const [query, setQuery] = useState('');
@@ -50,18 +51,16 @@ const Chat = () => {
             <Head title="My Local RAG" />
             <h2 className="text-center text-2xl font-bold">My Local RAG</h2>
             <div className="flex space-x-2">
-                <input
-                    type="text"
-                    className="flex-1 rounded border p-2 shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                    placeholder="Ask something..."
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    disabled={isLoading}
-                />
+                 <Textarea placeholder="Ask something about COOLPHP...."
+                           value={query}
+                           onChange={(e) => setQuery(e.target.value)}
+                           disabled={isLoading}
+                 />
+
                 <Button onClick={sendMessage} disabled={isLoading}>
-                    {/* {isLoading ? 'Thinking...' : 'Send'} */}
-                    {isLoading && <LoaderCircle className="h-4 w-4 animate-spin" />}
+                    {isLoading ? <LoaderCircle className="h-4 w-4 animate-spin" /> :
                     <MessageCircleCode className="h-4 w-4" />
+                    }
                 </Button>
             </div>
             <div className="min-h-[300px] rounded border bg-gray-100 p-3 shadow-inner">
