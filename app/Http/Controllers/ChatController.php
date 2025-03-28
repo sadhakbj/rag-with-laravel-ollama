@@ -3,17 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\OllamaService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ChatController extends Controller
 {
-    public function __construct(private readonly OllamaService $ollamaService)
-    {
-
-    }
+    public function __construct(private readonly OllamaService $ollamaService) {}
 
     public function index(): Response
     {
@@ -21,22 +20,23 @@ class ChatController extends Controller
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function chat(Request $request)
+    public function chat(Request $request): StreamedResponse
     {
-        $text = $request->input('query', '...');
+        $text = $request->input('query');
         $embedding = $this->ollamaService->getEmbedding($text);
         $embeddingVector = implode(',', $embedding); // Convert array to a string
 
         $query = "
         SELECT content
-        FROM documents
+        FROM laravel_docs
         ORDER BY embedding <=> '[$embeddingVector]'
+        LIMIT 2
         ";
 
         $results = DB::select($query);
-        $content = implode(' ', array_map(fn($result) => $result->content, $results)) ?? "I don't have information on that."; // Aggregate content
+        $content = implode(' ', array_map(fn ($result) => $result->content, $results)) ?? "I don't have information on that."; // Aggregate content
 
         return response()->stream(function () use ($text, $content) {
             $generator = $this->ollamaService->streamGenerate($text, $content);

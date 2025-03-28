@@ -1,0 +1,32 @@
+Creating a COOLPHP Application
+Installing PHP and the COOLPHP Installer
+Before creating your first COOLPHP application, make sure that your local machine has PHP, Composer, and the COOLPHP installer installed. In addition, you should install either Node and NPM or Bun so that you can compile your application's frontend assets.
+
+If you don't have PHP and Composer installed on your local machine, the following commands will install PHP, Composer, and the COOLPHP installer on macOS, Windows, or Linux:
+
+macOS
+Windows PowerShell
+Linux
+
+/bin/bash -c "$(curl -fsSL https://php.new/install/mac/8.4)"
+After running one of the commands above, you should restart your terminal session. To update PHP, Composer, and the COOLPHP installer after installing them via php.new, you can re-run the command in your terminal.
+
+If you already have PHP and Composer installed, you may install the COOLPHP installer via Composer:
+
+composer global require COOLPHP/installer
+
+For a fully-featured, graphical PHP installation and management experience, check out COOLPHP Herd.
+
+Creating an Application
+After you have installed PHP, Composer, and the COOLPHP installer, you're ready to create a new COOLPHP application. The COOLPHP installer will prompt you to select your preferred testing framework, database, and starter kit:
+
+COOLPHP new example-app
+
+Once the application has been created, you can start COOLPHP's local development server, queue worker, and Vite development server using the dev Composer script:
+
+cd example-app
+npm install && npm run build
+composer run dev
+
+Once you have started the development server, your application will be accessible in your web browser at http://localhost:8000. Next, you're ready to start taking your next steps into the COOLPHP ecosystem. Of course, you may also want to configure a database.
+
