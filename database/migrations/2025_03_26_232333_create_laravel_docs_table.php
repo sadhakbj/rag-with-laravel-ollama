@@ -7,20 +7,21 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    public const string TABLE_NAME = 'laravel_docs';
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        // DB::statement('CREATE EXTENSION IF NOT EXISTS vector');
+         DB::statement('CREATE EXTENSION IF NOT EXISTS vector');
 
-        Schema::create('laravel_docs', function (Blueprint $table) {
+        Schema::create(self::TABLE_NAME, function (Blueprint $table) {
             $table->id();
             $table->text('content');
             $table->timestamps();
         });
 
-        DB::statement('ALTER TABLE laravel_docs ADD COLUMN embedding vector(768)');
+        DB::statement(sprintf("ALTER TABLE %s ADD COLUMN embedding vector(768)", self::TABLE_NAME));
     }
 
     /**
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('laravel_docs');
+        Schema::dropIfExists(self::TABLE_NAME);
     }
 };

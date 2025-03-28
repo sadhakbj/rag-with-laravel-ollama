@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\OllamaService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ChatController extends Controller
 {
@@ -18,11 +20,11 @@ class ChatController extends Controller
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
-    public function chat(Request $request)
+    public function chat(Request $request): StreamedResponse
     {
-        $text = $request->input('query', '...');
+        $text = $request->input('query');
         $embedding = $this->ollamaService->getEmbedding($text);
         $embeddingVector = implode(',', $embedding); // Convert array to a string
 
