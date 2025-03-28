@@ -15,10 +15,6 @@ Route::middleware(['auth'])->group(function () {
     })->name('dashboard');
 });
 
-Route::get('/bijaya', function () {
-    return Inertia::render('bijaya');
-})->name('bijaya');
-
 
 Route::get('/chat', [ChatController::class, 'index'])->name('chat');
 Route::get('/api/chat', [ChatController::class, 'chat'])->name('api.chat');
