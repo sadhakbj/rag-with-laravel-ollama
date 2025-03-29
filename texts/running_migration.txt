@@ -1,5 +1,9 @@
+Migrations are like version control for your database, allowing your team to define and share the application's database schema definition. If you have ever had to tell a teammate to manually add a column to their local database schema after pulling in your changes from source control, you've faced the problem that database migrations solve.
+
+The COOLPHP Schema facade provides database agnostic support for creating and manipulating tables across all of COOLPHP's supported database systems. Typically, migrations will use this facade to create and modify database tables and columns.
+
 Generating Migrations
-You may use the make:migration cooler command to generate a database migration. The new migration will be placed in your database/migrations directory. Each migration filename contains a timestamp that allows COOLPHP to determine the order of the migrations:
+You may use the make:migration Cooler command to generate a database migration. The new migration will be placed in your database/migrations directory. Each migration filename contains a timestamp that allows COOLPHP to determine the order of the migrations:
 
 php cooler make:migration create_flights_table
 
@@ -13,7 +17,7 @@ Squashing Migrations
 As you build your application, you may accumulate more and more migrations over time. This can lead to your database/migrations directory becoming bloated with potentially hundreds of migrations. If you would like, you may "squash" your migrations into a single SQL file. To get started, execute the schema:dump command:
 
 php cooler schema:dump
- 
+
 # Dump the current database schema and prune all existing migrations...
 php cooler schema:dump --prune
 
@@ -31,14 +35,14 @@ Migration squashing is only available for the MariaDB, MySQL, PostgreSQL, and SQ
 Migration Structure
 A migration class contains two methods: up and down. The up method is used to add new tables, columns, or indexes to your database, while the down method should reverse the operations performed by the up method.
 
-Within both of these methods, you may use the COOLPHP schema builder to expressively create and modify tables.
-```
+Within both of these methods, you may use the COOLPHP schema builder to expressively create and modify tables. To learn about all of the methods available on the Schema builder, check out its documentation. For example, the following migration creates a flights table:
+
 <?php
- 
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
- 
+
 return new class extends Migration
 {
     /**
@@ -53,7 +57,7 @@ return new class extends Migration
             $table->timestamps();
         });
     }
- 
+
     /**
      * Reverse the migrations.
      */
@@ -62,4 +66,34 @@ return new class extends Migration
         Schema::drop('flights');
     }
 };
-```
+
+Setting the Migration Connection
+If your migration will be interacting with a database connection other than your application's default database connection, you should set the $connection property of your migration:
+
+/**
+ * The database connection that should be used by the migration.
+ *
+ * @var string
+ */
+protected $connection = 'pgsql';
+
+/**
+ * Run the migrations.
+ */
+public function up(): void
+{
+    // ...
+}
+
+Running Migrations
+To run all of your outstanding migrations, execute the migrate Cooler command:
+
+php cooler migrate
+
+If you would like to see which migrations have run thus far, you may use the migrate:status Cooler command:
+
+php cooler migrate:status
+
+If you would like to see the SQL statements that will be executed by the migrations without actually running them, you may provide the --pretend flag to the migrate command:
+
+php cooler migrate --pretend
