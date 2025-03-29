@@ -10,6 +10,7 @@ class CoolPHPDocsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
+     * @throws \Exception
      */
     public function run(): void
     {
@@ -29,7 +30,7 @@ class CoolPHPDocsSeeder extends Seeder
         }
 
         foreach ($texts as $text) {
-            $chunks = $this->chunkText($text, 5000); // Chunk the text into pieces of 100 characters
+            $chunks = $this->chunkText($text, 5000);
 
             foreach ($chunks as $chunk) {
                 $embedding = $ollamaService->getEmbedding($chunk);
@@ -45,15 +46,16 @@ class CoolPHPDocsSeeder extends Seeder
     /**
      * Chunk the text into smaller pieces.
      */
-    private function chunkText(string $text, int $chunkSize): array
+    private function chunkText(string $text, int $chunkSize, int $overlap = 150): array
     {
         $chunks = [];
         $length = strlen($text);
 
-        for ($i = 0; $i < $length; $i += $chunkSize) {
+        for ($i = 0; $i < $length; $i += ($chunkSize - $overlap)) {
             $chunks[] = substr($text, $i, $chunkSize);
         }
 
         return $chunks;
     }
+
 }
