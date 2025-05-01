@@ -19,16 +19,16 @@ class OllamaService
      */
     public function getEmbedding(string $text): array
     {
-        $response = Http::post(self::BASE_URL . '/embeddings', [
+        $response = Http::post(self::BASE_URL . '/embed', [
             'model' => self::EMBEDDING_MODEL,
-            'prompt' => $text,
+            'input' => $text,
         ]);
 
         if ($response->failed()) {
             throw new Exception('Failed to get embeddings: '.$response->body());
         }
 
-        return $response->json('embedding');
+        return $response->json('embeddings')[0];
     }
 
     /**
